@@ -2,110 +2,84 @@
 
 Summary:	The mate desktop programs for the MATE GUI desktop environment
 Name:		mate-session-manager
-Version:	1.14.0
+Version:	1.18.2
 Release:	1
 License:	GPLv2+
-Group:		Graphical desktop/GNOME
-Url:		http://mate-desktop.org
-Source0:	http://pub.mate-desktop.org/releases/%{url_ver}/%{name}-%{version}.tar.xz
+Group:		Graphical desktop/Other
+Url:		https://mate-desktop.org
+Source0:	https://pub.mate-desktop.org/releases/%{url_ver}/%{name}-%{version}.tar.xz
 Source1:	startmate
 Source2:	materc
 Source3:	mate-lightdm.conf
-BuildRequires:	gtk-doc
+Patch0:		https://patch-diff.githubusercontent.com/raw/mate-desktop/mate-session-manager/pull/138.patch
+
 BuildRequires:	intltool
 BuildRequires:	mate-common
 BuildRequires:	tcp_wrappers-devel
 BuildRequires:	pkgconfig(dbus-glib-1)
+BuildRequires:	pkgconfig(gio-2.0)
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(gtk+-3.0)
-BuildRequires:	pkgconfig(systemd)
+BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(pangox)
 BuildRequires:	pkgconfig(sm)
+BuildRequires:	pkgconfig(systemd)
+BuildRequires:	pkgconfig(xext)
+BuildRequires:	pkgconfig(xrender)
+BuildRequires:	pkgconfig(xtst)
 BuildRequires:	pkgconfig(xtrans)
+BuildRequires:	xmlto
+
 Requires:	desktop-common-data
-Requires:	mate-polkit
-Requires:	mate-settings-daemon
+Requires:	mate-polkit >= %{url_ver}
+Requires:	mate-settings-daemon >= %{url_ver}
 Requires:	%{name}-bin >= %{EVRD}
 
 %description
-MATE (GNU Network Object Model Environment) is a user-friendly
-set of applications and desktop tools to be used in conjunction with a
-window manager for the X Window System.
+The MATE Desktop Environment is the continuation of GNOME 2. It provides an
+intuitive and attractive desktop environment using traditional metaphors for
+Linux and other Unix-like operating systems.
+
+MATE is under active development to add support for new technologies while
+preserving a traditional desktop experience.
 
 The MATE Session Manager restores a set session (group of applications)
 when you log into MATE.
 
-%package bin
-Group: %{group}
-Summary: %{summary}
-
-%description bin
-This package contains the binaries for the MATE Session Manager, but 
-no startup scripts. It is meant for applications such as GDM that use 
-mate-session internally.
-
-%prep
-%setup -q
-%apply_patches
-NOCONFIGURE=yes ./autogen.sh
-
-%build
-%configure \
-	--with-systemd \
-	--with-gtk=3.0
-
-%make
-
-%install
-%makeinstall_std
-
-# remove unneeded converter
-rm -fr %{buildroot}%{_datadir}/MateConf
-rm -f %{buildroot}%{_datadir}/doc/mate-session/dbus/mate-session.html
-
-# wmsession session file
-mkdir -p %{buildroot}%{_sysconfdir}/X11/wmsession.d
-cat << EOF > %{buildroot}%{_sysconfdir}/X11/wmsession.d/05MATE
-NAME=MATE
-ICON=mate
-DESC=MATE Environment
-EXEC=%{_bindir}/startmate
-SCRIPT:
-exec %{_bindir}/startmate
-EOF
-
-install -D -m 755 %{SOURCE1} %{buildroot}%{_bindir}/startmate
-install -D -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/materc
-
-# remove xsession file, it causes duplicate entries in GDM
-rm -rf %{buildroot}%{_datadir}/xsessions/mate.desktop
-
-# Pre-select MATE session in lightdm greeter when booting first time after install
-install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/lightdm/lightdm.conf.d/50-mate.conf
-
-%find_lang %{name}
-
-%post
-if [ "$1" = "2" -a -r /etc/sysconfig/desktop ]; then
-	sed -i -e "s|^DESKTOP=Mate$|DESKTOP=MATE|g" /etc/sysconfig/desktop
-fi
-
 %files -f %{name}.lang
 %doc AUTHORS COPYING ChangeLog NEWS README
-%config %{_sysconfdir}/X11/wmsession.d/*
 %config(noreplace) %{_sysconfdir}/lightdm/lightdm.conf.d/50-mate.conf
 %{_bindir}/mate-session-properties
 %{_bindir}/mate-session-save
 %{_bindir}/mate-session-inhibit
 %{_bindir}/mate-wm
 %{_datadir}/applications/*
+%dir %{_datadir}/mate-session-manager
 %{_datadir}/mate-session-manager/gsm-inhibit-dialog.ui
 %{_datadir}/mate-session-manager/session-properties.ui
-#{_datadir}/xsessions/mate.desktop
+%{_datadir}/xsessions/mate.desktop
 %{_mandir}/man1/mate-session-inhibit.1*
 %{_mandir}/man1/mate-session-properties.*
 %{_mandir}/man1/mate-session-save.1*
 %{_mandir}/man1/mate-wm.1*
+
+#---------------------------------------------------------------------------
+
+%package bin
+Group: %{group}
+Summary: %{summary}
+
+%description bin
+The MATE Desktop Environment is the continuation of GNOME 2. It provides an
+intuitive and attractive desktop environment using traditional metaphors for
+Linux and other Unix-like operating systems.
+
+MATE is under active development to add support for new technologies while
+preserving a traditional desktop experience.
+
+This package contains the binaries for the MATE Session Manager, but 
+no startup scripts. It is meant for applications such as GDM that use 
+mate-session internally.
 
 %files bin
 %{_sysconfdir}/materc
@@ -114,4 +88,39 @@ fi
 %{_bindir}/startmate
 %{_iconsdir}/hicolor/*/apps/*
 %{_mandir}/man1/mate-session.*
+
+#---------------------------------------------------------------------------
+
+%prep
+%setup -q
+%apply_patches
+
+%build
+#NOCONFIGURE=1 ./autogen.sh
+%configure \
+	--with-systemd \
+	--disable-schemas-compile \
+	%{nil}
+%make
+
+%install
+%makeinstall_std
+
+# install custom script
+install -Dm 0755 %{SOURCE1} %{buildroot}%{_bindir}/startmate
+install -Dm 0755 %{SOURCE2} %{buildroot}%{_sysconfdir}/materc
+
+# Use custom startmate instead of default mate-session
+sed -i -e "s|^Exec=mate-session|Exec=startmate|" %{buildroot}%{_datadir}/xsessions/mate.desktop
+
+# Pre-select MATE session in lightdm greeter when booting first time after install
+install -Dm 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/lightdm/lightdm.conf.d/50-mate.conf
+
+# locales
+%find_lang %{name} --with-gnome --all-name
+
+%post
+if [ "$1" = "2" -a -r /etc/sysconfig/desktop ]; then
+	sed -i -e "s|^DESKTOP=Mate$|DESKTOP=MATE|g" /etc/sysconfig/desktop
+fi
 
