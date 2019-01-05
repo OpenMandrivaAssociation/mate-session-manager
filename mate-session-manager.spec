@@ -2,7 +2,7 @@
 
 Summary:	The mate desktop programs for the MATE GUI desktop environment
 Name:		mate-session-manager
-Version:	1.20.0
+Version:	1.20.2
 Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/Other
@@ -76,8 +76,8 @@ Linux and other Unix-like operating systems.
 MATE is under active development to add support for new technologies while
 preserving a traditional desktop experience.
 
-This package contains the binaries for the MATE Session Manager, but 
-no startup scripts. It is meant for applications such as GDM that use 
+This package contains the binaries for the MATE Session Manager, but
+no startup scripts. It is meant for applications such as GDM that use
 mate-session internally.
 
 %files bin
@@ -92,7 +92,7 @@ mate-session internally.
 
 %prep
 %setup -q
-%apply_patches
+%autopatch -p1
 
 %build
 #NOCONFIGURE=1 ./autogen.sh
@@ -100,10 +100,10 @@ mate-session internally.
 	--with-systemd \
 	--disable-schemas-compile \
 	%{nil}
-%make
+%make_build
 
 %install
-%makeinstall_std
+%make_install
 
 # install custom script
 install -Dm 0755 %{SOURCE1} %{buildroot}%{_bindir}/startmate
@@ -122,4 +122,3 @@ install -Dm 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/lightdm/lightdm.conf.d/50
 if [ "$1" = "2" -a -r /etc/sysconfig/desktop ]; then
 	sed -i -e "s|^DESKTOP=Mate$|DESKTOP=MATE|g" /etc/sysconfig/desktop
 fi
-
