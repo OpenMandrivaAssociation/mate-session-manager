@@ -58,7 +58,7 @@ when you log into MATE.
 %{_datadir}/mate-session-manager/gsm-inhibit-dialog.ui
 %{_datadir}/mate-session-manager/session-properties.ui
 %{_datadir}/xsessions/mate.desktop
-%dir %{_docdir}/%{name}/dbus/mate-session.htm
+%dir %{_docdir}/%{name}/dbus/mate-session.html
 %{_docdir}/%{name}/dbus/mate-session.htm
 %{_mandir}/man1/mate-session-inhibit.1*
 %{_mandir}/man1/mate-session-properties.*
