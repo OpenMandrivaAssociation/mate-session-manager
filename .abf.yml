@@ -3,5 +3,6 @@ removed_sources:
   mate-session-manager-1.18.0.tar.xz: 20bbeebcbdbb2f0cc73e0a1a8f74d72dab27f55e
   mate-session-manager-1.18.2.tar.xz: c8f08bec079bebcf1b60cf95c4eebd236803189f
   mate-session-manager-1.20.0.tar.xz: 198ef02c1ed6fe59960a86091da3304f51b94e16
-sources:
   mate-session-manager-1.20.2.tar.xz: 3ac7af151470e7551f5bd7b45b847517595d07d8
+sources:
+  mate-session-manager-1.22.1.tar.xz: 187300b99c2685a0bf422c84b3a7e912a821e84a
