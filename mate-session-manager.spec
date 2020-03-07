@@ -2,7 +2,7 @@
 
 Summary:	The mate desktop programs for the MATE GUI desktop environment
 Name:		mate-session-manager
-Version:	1.22.3
+Version:	1.24.0
 Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/Other
@@ -12,6 +12,7 @@ Source1:	startmate
 Source2:	materc
 Source3:	mate-lightdm.conf
 
+BuildRequires:	autoconf-archive
 BuildRequires:	intltool
 BuildRequires:	mate-common
 BuildRequires:	tcp_wrappers-devel
