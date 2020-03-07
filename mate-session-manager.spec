@@ -29,6 +29,7 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	pkgconfig(xtst)
 BuildRequires:	pkgconfig(xtrans)
+BuildRequires:  pkgconfig(glesv2)
 BuildRequires:	xmlto
 
 Requires:	desktop-common-data
@@ -54,6 +55,10 @@ when you log into MATE.
 %{_bindir}/mate-session-save
 %{_bindir}/mate-session-inhibit
 %{_bindir}/mate-wm
+%{_libexecdir}/mate-session-check-accelerated
+%{_libexecdir}/mate-session-check-accelerated-gl-helper
+%{_libexecdir}/mate-session-check-accelerated-gles-helper
+%{_datadir}/%{name}/hardware-compatibility
 %{_datadir}/applications/*
 %dir %{_datadir}/mate-session-manager
 %{_datadir}/mate-session-manager/gsm-inhibit-dialog.ui
