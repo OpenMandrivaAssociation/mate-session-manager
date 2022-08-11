@@ -6,7 +6,7 @@
 # Base directory relative to which user specific configuration
 #files should be stored
 if [ -z "$XDG_CONFIG_HOME" ]; then
-	export XDG_CONFIG_HOME="$HOME/.config"
+    export XDG_CONFIG_HOME="$HOME/.config"
 fi
 
 # Base directory relative to which user specific data files should be stored

@@ -3,7 +3,7 @@
 Summary:	The mate desktop programs for the MATE GUI desktop environment
 Name:		mate-session-manager
 Version:	1.26.0
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		Graphical desktop/Other
 Url:		https://mate-desktop.org
@@ -20,7 +20,7 @@ BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(gio-2.0)
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(gtk+-3.0)
-BuildRequires:  pkgconfig(mate-desktop-2.0)
+BuildRequires:	pkgconfig(mate-desktop-2.0)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(pangox)
 BuildRequires:	pkgconfig(sm)
@@ -29,10 +29,10 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	pkgconfig(xtst)
 BuildRequires:	pkgconfig(xtrans)
-BuildRequires:  pkgconfig(glesv2)
+BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	xmlto
 
-Requires:	desktop-common-data
+Requires:	distro-release-desktop
 Requires:	mate-polkit >= %{url_ver}
 Requires:	mate-settings-daemon >= %{url_ver}
 Requires:	%{name}-bin >= %{EVRD}
@@ -65,17 +65,17 @@ when you log into MATE.
 %{_datadir}/mate-session-manager/session-properties.ui
 %{_datadir}/xsessions/mate.desktop
 %dir %{_docdir}/%{name}/dbus
-%{_docdir}/%{name}/dbus/mate-session.html
-%{_mandir}/man1/mate-session-inhibit.1*
-%{_mandir}/man1/mate-session-properties.*
-%{_mandir}/man1/mate-session-save.1*
-%{_mandir}/man1/mate-wm.1*
+%doc %{_docdir}/%{name}/dbus/mate-session.html
+%doc %{_mandir}/man1/mate-session-inhibit.1*
+%doc %{_mandir}/man1/mate-session-properties.*
+%doc %{_mandir}/man1/mate-session-save.1*
+%doc %{_mandir}/man1/mate-wm.1*
 
 #---------------------------------------------------------------------------
 
 %package bin
-Group: %{group}
-Summary: %{summary}
+Group:		%{group}
+Summary:	%{summary}
 
 %description bin
 The MATE Desktop Environment is the continuation of GNOME 2. It provides an
@@ -95,20 +95,20 @@ mate-session internally.
 %{_bindir}/mate-session
 %{_bindir}/startmate
 %{_iconsdir}/hicolor/*/apps/*
-%{_mandir}/man1/mate-session.*
+%doc %{_mandir}/man1/mate-session.*
 
 #---------------------------------------------------------------------------
 
 %prep
-%setup -q
-%autopatch -p1
+%autosetup -p1
 
 %build
 #NOCONFIGURE=1 ./autogen.sh
 %configure \
 	--with-systemd \
-	--disable-schemas-compile \
-	%{nil}
+	--with-default-wm=marco \
+	--disable-schemas-compile
+
 %make_build
 
 %install
@@ -129,5 +129,5 @@ install -Dm 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/lightdm/lightdm.conf.d/50
 
 %post
 if [ "$1" = "2" -a -r /etc/sysconfig/desktop ]; then
-	sed -i -e "s|^DESKTOP=Mate$|DESKTOP=MATE|g" /etc/sysconfig/desktop
+    sed -i -e "s|^DESKTOP=Mate$|DESKTOP=MATE|g" /etc/sysconfig/desktop
 fi
