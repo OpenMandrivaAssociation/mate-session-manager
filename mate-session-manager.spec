@@ -1,13 +1,13 @@
-%define url_ver %(echo %{version}|cut -d. -f1,2)
+%define mate_ver	%(echo %{version}|cut -d. -f1,2)
 
 Summary:	The mate desktop programs for the MATE GUI desktop environment
 Name:		mate-session-manager
-Version:	1.26.1
+Version:	1.28.0
 Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/Other
 Url:		https://mate-desktop.org
-Source0:	https://pub.mate-desktop.org/releases/%{url_ver}/%{name}-%{version}.tar.xz
+Source0:	https://pub.mate-desktop.org/releases/%{mate_ver}/%{name}-%{version}.tar.xz
 Source1:	startmate
 Source2:	materc
 Source3:	mate-lightdm.conf
@@ -33,8 +33,8 @@ BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	xmlto
 
 Requires:	distro-release-desktop
-Requires:	mate-polkit >= %{url_ver}
-Requires:	mate-settings-daemon >= %{url_ver}
+Requires:	mate-polkit
+Requires:	mate-settings-daemon
 Requires:	%{name}-bin >= %{EVRD}
 
 %description
