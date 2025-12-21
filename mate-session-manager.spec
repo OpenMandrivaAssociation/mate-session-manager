@@ -12,6 +12,10 @@ Source1:	startmate
 Source2:	materc
 Source3:	mate-lightdm.conf
 
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	autoconf-archive
 BuildRequires:	intltool
 BuildRequires:	mate-common
